@@ -14,19 +14,17 @@ app = Flask(__name__)
 def application_home():
     return 'Welcome to Medical Records Application'
 
-@app.route('/api/patients/list')
-def fetch_patients():
-    return jsonpickle.encode(Patient.fetch_all_patients_from_db())
 
-@app.route('/ai/patients/register',methods=['POST'])
+
+
+@app.route('/api/patients/register',methods=['POST'])
 def register_patient():
     Patient.insert_patient_in_db(
-        Patient({"patient_id":int(request.form.get("patient_id")),
+        Patient_data({
                  "name":request.form.get("name"),
                  "age":int(request.form.get("age")),
                  "address":request.form.get("address")}))
-    return jsonpickle.encode(Patient.fetch_all_patients_from_db(
-        int(request.form.get("patient_id"))))
+    return jsonpickle.encode(Patient.fetch_all_patients_from_db())
 
 if __name__ == '__main__':
     app.run(port=7700)
