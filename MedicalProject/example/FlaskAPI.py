@@ -5,7 +5,7 @@ Created on 13 Feb 2019
 '''
 from flask import Flask
 import jsonpickle
-from example.MedicalApplication import Patient
+from example.MedicalApplication import Patient, Patient_data
 from flask.globals import request
 
 app = Flask(__name__)

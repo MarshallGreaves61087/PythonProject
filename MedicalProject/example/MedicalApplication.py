@@ -6,13 +6,23 @@ Created on 13 Feb 2019
 from flask.app import Flask
 from flask_sqlalchemy import SQLAlchemy
 from mysql import connector
+import jsonpickle
 
 app= Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/graduate_training'
 db = SQLAlchemy(app)
 
+class Patient_data(object):
+     
+     def __init__(self,params):
+        self.patient_id = int(params["patient_id"])
+        self.name=params["name"]
+        self.age=int(params["age"])
+        self.address=params["address"]
+
 class Patient(db.Model):
+    
     __tablename__="alc_Patients"
     patient_id = db.Column(db.Integer,primary_key=True)
     name = db.Column('patient_name',db.String(50))
@@ -37,11 +47,11 @@ class Patient(db.Model):
         cur.execute('select * from alc_Patients')
         patients = []
         for(patient_id,name,age,address) in cur:
-            patients.append(Patient({"patient_id":patient_id,"name":name,
+            patients.append(Patient_data({"patient_id":patient_id,"name":name,
                                      "age":age,"address":address}))
         cur.close()
         cnx.close()
-        return patients
+        return jsonpickle.encode(patients)
     def __str__(self):
         return "Patient Id:"+str(self.patient_id)+"Name:"+self.name+"Age:"+str(self.age)+"Address:"+self.address
 
@@ -55,7 +65,7 @@ class Patient(db.Model):
         cur.execute('select * from alc_Patients where patient_id = '+str(patient_id))
         patient=None
         for(patient_id,name,age,address) in cur:  #fetch each column data from the cursor
-            patient = Patient({"patient_id":patient_id,"name":name,
+            patient = Patient_data({"patient_id":patient_id,"name":name,
                                      "age":age,"address":address})
         cur.close()
         cnx.close()
