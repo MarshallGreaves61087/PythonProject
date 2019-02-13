@@ -36,7 +36,22 @@ class Patient(db.Model):
         self.gender=params["gender"]
         pass
     
+class Report(db.Model):
     
+    __tablename__="alc_Reports"
+    report_id = db.Column(db.Integer,primary_key=True)
+    title = db.Column('report_title',db.String(50))
+    related_illness=db.Column('related_illness',db.String(50))
+    date=db.Column('date',db.String(50))
+    notes = db.Column('notes',db.String(300))
+    perscription = db.Column('perscription',db.String(20))
+    
+    def __init__(self,params):
+        self.title=params["title"]
+        self.related_illness=params["related_illness"]
+        self.date=params["date"]
+        self.notes=params["notes"]
+        self.perscription=params["perscription"]   
             
 @app.route('/patients')
 def example_Patient():
@@ -49,7 +64,19 @@ def example_Patient():
         print("Id: ",p.patient_id,"Name: ",p.name,"Age: ",p.age,"Address: ",p.address,
               "Email: ",p.email,"Gender: ",p.gender)
         
-    return str(patients)    
+    return str(patients)
+
+@app.route('/reports')
+def example_Report():
+    r = Report({"title":"Report 1","related_illness":"illness 1","date":"11.11.2018",
+                "notes":"note example","perscription":"perscription example"})
+    db.session.add(r)
+    db.session.commit()
+    reports = Report.query.all()
+    for r in reports:
+        print("Id: ",r.report_id,"Title: ",r.title,"Related Illness: ",r.related_illness,
+              "Date: ",r.date,"Notes: ",r.notes,"Perscription: ",r.perscription)
+    return str(reports)    
 
 @app.route('/api/patients/register',methods=['POST'])
 def insert_Patient():
@@ -65,7 +92,25 @@ def insert_Patient():
         print("Id: ",p.patient_id,"Name: ",p.name,"Age: ",p.age,"Address: ",p.address,
               "Email: ",p.email,"Gender :",p.gender)
         
-    return str(patients) 
+    return str(patients)
+
+@app.route('/api/reports/register',methods=['POST'])
+def insert_Report():
+    r = db.session.add(Report({"title":request.form.get("title"),
+                               "related_illness":request.form.get("related_illness"),
+                               "date":request.form.get("date"),
+                               "notes":request.form.get("notes"),
+                               "perscription":request.form.get("perscription")}))
+    db.session.commit()
+    reports = Report.query.all()
+    for r in reports:
+        print("Id: ",r.report_id,"Title: ",r.title,"Related Illness: ",r.related_illness,
+              "Date: ",r.date,"Notes: ",r.notes,"Perscription: ",r.perscription)
+    return str(reports) 
+
+@app.route('/api/reports/list')
+def fetch_reports():
+    return jsonpickle.encode(Report.query.all())
     
 @app.route('/api/patients/list')
 def fetch_patients():
