@@ -38,10 +38,6 @@ class Patient(db.Model):
         self.address=params["address"]
         pass
             
-    #def __str__(self):
-    #   return "Patient Id:"+str(self.patient_id)+"Name:"+self.name+"Age:"+str(self.age)+"Address:"+self.address
-    
-
 @app.route('/patients')
 def example_Patient():
     p = Patient({"name":"Example 2","age":46,"address":"New Address 2"})
@@ -55,8 +51,10 @@ def example_Patient():
 
 @app.route('/api/patients/register',methods=['POST'])
 def insert_Patient():
-    p=db.session.add(Patient({"name":"Example 4","age":48,"address":"New Address 4"}))
-
+    #p=db.session.add(Patient({"name":"Example 4","age":48,"address":"New Address 4"}))
+    p = db.session.add(Patient({"name":request.form.get("name"),
+                                "age":int(request.form.get("age")),
+                                "address":request.form.get("address")}))
     db.session.commit()
     patients = Patient.query.all()
     for p in patients:
