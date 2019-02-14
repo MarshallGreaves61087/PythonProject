@@ -213,10 +213,6 @@ def insert_Report():
 
 @app.route('/web/reports/register',methods=['POST'])
 def register_report_web():
-<<<<<<< HEAD
-    insert_Report();
-    return redirect("/web/reports")
-=======
     insert_Report(
         Report({"title":request.form.get("title"),
                                "related_illness":request.form.get("related_illness"),
@@ -226,7 +222,6 @@ def register_report_web():
                                "patient_id":request.form.get("patient_id")}))
     db.session.commit()
     return redirect("/web/patients")
->>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 @app.route('/api/labmanager/register',methods=['POST'])
 def insert_Lab_Manager():   
@@ -274,7 +269,6 @@ def display_reports_page():
 def fetch_patients():
     return jsonpickle.encode(Patient.query.all())
 
-<<<<<<< HEAD
 @app.route("/web/patients")
 def display_patients_page():
     return render_template('/patients.html',result=jsonpickle.decode(fetch_patients()),content_type="application/json")
@@ -282,11 +276,10 @@ def display_patients_page():
 @app.route("/web/home")
 def display_home_page():
     return render_template('/home.html',result=jsonpickle.decode(fetch_reports()),content_type="application/json")
-=======
+
 @app.route('/api/labmanager/list')
 def fetch_Lab_Managers():
     return jsonpickle.encode(Lab_Manager.query.all())
->>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 
 if __name__ == '__main__':
@@ -300,10 +293,7 @@ if __name__ == '__main__':
 #     for p in Patient.fetch_all_patients_from_db():
 #         print(p) 
 #     print(Patient.fetch_patient_by_patient_id_from_db(2))
-<<<<<<< HEAD
 #    insert_Report()
     app.run(port=7770)
-=======
-    app.run(port=7700)
->>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
+
     pass
