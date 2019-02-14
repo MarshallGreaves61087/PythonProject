@@ -9,6 +9,7 @@ import jsonpickle
 from flask.globals import request
 from sqlalchemy.orm import backref
 from werkzeug.utils import redirect
+from flask.templating import render_template
 
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/medical_data'
@@ -81,6 +82,7 @@ class Lab_Manager(db.Model):
     __tablename__="alc_Lab_Manager"
     lab_manager_id = db.Column(db.Integer,primary_key=True)
     name = db.Column('lab_manager_name',db.String(50))
+    location = db.Column('lab_manager_location',db.String(50))
     test = db.Column('lab_manager_test',db.String(50))
     result = db.Column('lab_manager_result',db.String(50))
 
@@ -180,11 +182,7 @@ def insert_Patient():
 
 @app.route('/web/patients/register',methods=['POST'])
 def register_patient_web():
-    insert_Patient(Patient({"name":request.form.get("name"),
-                                "age":int(request.form.get("age")),
-                                "address":request.form.get("address"),
-                                "email":request.form.get("email"),
-                                "gender":request.form.get("gender")}))
+    insert_Patient();
     return redirect("/web/patients")
 
 @app.route('/api/reports/register',methods=['POST'])
@@ -215,6 +213,10 @@ def insert_Report():
 
 @app.route('/web/reports/register',methods=['POST'])
 def register_report_web():
+<<<<<<< HEAD
+    insert_Report();
+    return redirect("/web/reports")
+=======
     insert_Report(
         Report({"title":request.form.get("title"),
                                "related_illness":request.form.get("related_illness"),
@@ -224,6 +226,7 @@ def register_report_web():
                                "patient_id":request.form.get("patient_id")}))
     db.session.commit()
     return redirect("/web/patients")
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 @app.route('/api/labmanager/register',methods=['POST'])
 def insert_Lab_Manager():   
@@ -239,17 +242,51 @@ def insert_Lab_Manager():
         
     return str(labManager)    
 
+@app.route('/api/labmanager/delete/<int:lab_manager_id>', methods = ['DELETE'])
+def delete_lab_manager(lab_manager_id):
+    labmanager = Lab_Manager.query.get(int(lab_manager_id))
+    db.session.delete(labmanager)
+    db.session.commit()
+    return jsonpickle.encode(labmanager)
+
+@app.route("/api/labmanager/update/<int:lab_manager_id>",methods=['POST'])
+def edit_lab_manager_reports(lab_manager_id):
+    request_data = request.get_json()
+    lbmg = Lab_Manager.query.get(int(lab_manager_id))
+    lbmg.name = request_data["name"]
+    lbmg.location = request_data["location"]
+    lbmg.test = request_data["test"]
+    lbmg.result = request_data["result"]
+    db.session.commit()
+    return_lab_manager = {"lab_manager_id":lbmg.lab_manager_id,"name":lbmg.name,
+                     "location":lbmg.location,"test":lbmg.test,"result":lbmg.result}
+    return jsonpickle.encode(return_lab_manager)
+
 @app.route('/api/reports/list')
 def fetch_reports():
     return jsonpickle.encode(Report.query.all())
-    
+
+@app.route("/web/reports")
+def display_reports_page():
+    return render_template('/reports.html',result=jsonpickle.decode(fetch_reports()),content_type="application/json")
+
 @app.route('/api/patients/list')
 def fetch_patients():
     return jsonpickle.encode(Patient.query.all())
 
+<<<<<<< HEAD
+@app.route("/web/patients")
+def display_patients_page():
+    return render_template('/patients.html',result=jsonpickle.decode(fetch_patients()),content_type="application/json")
+
+@app.route("/web/home")
+def display_home_page():
+    return render_template('/home.html',result=jsonpickle.decode(fetch_reports()),content_type="application/json")
+=======
 @app.route('/api/labmanager/list')
 def fetch_Lab_Managers():
     return jsonpickle.encode(Lab_Manager.query.all())
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 
 if __name__ == '__main__':
@@ -263,5 +300,10 @@ if __name__ == '__main__':
 #     for p in Patient.fetch_all_patients_from_db():
 #         print(p) 
 #     print(Patient.fetch_patient_by_patient_id_from_db(2))
+<<<<<<< HEAD
+#    insert_Report()
+    app.run(port=7770)
+=======
     app.run(port=7700)
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
     pass
