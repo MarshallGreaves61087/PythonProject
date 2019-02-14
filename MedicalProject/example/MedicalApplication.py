@@ -85,8 +85,7 @@ class Lab_Manager(db.Model):
     result = db.Column('lab_manager_result',db.String(50))
 
     #one lab manager has many reports
-    #reports = db.relationship('Report',
-    #                                     backref=db.backref('labManager'),lazy=True)
+    reports = db.relationship('Report',backref=db.backref('labManager'),lazy=True)
     #one lab manager has many patients
     patients = db.relationship('Patient',
                                          backref=db.backref('labManager'),lazy=True)
@@ -123,14 +122,14 @@ def example_Report():
     p = Patient({"name":"Patient with Report","age":25,"address":"Patient Address",
                  "email":"example@gmail.com","gender":"Male"})
     
-    #l = Lab_Manager({"name":"Dr Steve","test":"Blood Test","result":"Clear"})
+    l = Lab_Manager({"name":"Dr Steve","test":"Blood Test","result":"Clear"})
     
     p.reports.append(r)
-    #l.reports.append(r)
+    l.reports.append(r)
     
     db.session.add(r)
     db.session.add(p)
-    #db.session.add(l)
+    db.session.add(l)
     
     db.session.commit()
     reports = Report.query.all()
