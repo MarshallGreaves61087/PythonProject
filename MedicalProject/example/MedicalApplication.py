@@ -34,11 +34,7 @@ class Patient(db.Model):
     #one patient has many reports
     reports = db.relationship('Report',backref=db.backref('patient'),lazy=True)
     
-    #many patients for one lab manager
-    lab_manager_id = db.Column(db.Integer,
-                           db.ForeignKey('alc_Lab_Manager.lab_manager_id'),
-                           nullable=False)
-
+    
     def __init__(self,params):
         #self.patient_id = int(params["patient_id"])
         self.name=params["name"]
@@ -88,10 +84,6 @@ class Lab_Manager(db.Model):
 
     #one lab manager has many reports
     reports = db.relationship('Report',backref=db.backref('labManager'),lazy=True)
-    
-    #one lab manager has many patients
-    patients = db.relationship('Patient',
-                                         backref=db.backref('labManager'),lazy=True)
     
     def __init__(self,params):
         self.name=params["name"]
@@ -213,6 +205,10 @@ def insert_Report():
 
 @app.route('/web/reports/register',methods=['POST'])
 def register_report_web():
+<<<<<<< HEAD
+    insert_Report();
+    return redirect("/web/reports")
+=======
     insert_Report(
         Report({"title":request.form.get("title"),
                                "related_illness":request.form.get("related_illness"),
@@ -222,6 +218,7 @@ def register_report_web():
                                "patient_id":request.form.get("patient_id")}))
     db.session.commit()
     return redirect("/web/patients")
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 @app.route('/api/labmanager/register',methods=['POST'])
 def insert_Lab_Manager():   
@@ -280,11 +277,14 @@ def display_home_page():
 @app.route('/api/labmanager/list')
 def fetch_Lab_Managers():
     return jsonpickle.encode(Lab_Manager.query.all())
+<<<<<<< HEAD
+=======
 
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 
 if __name__ == '__main__':
 
-#    db.create_all()
+    db.create_all()
 #    example_Patient()
 #    example_Lab_Manager()
 #    example_Report()
@@ -292,8 +292,17 @@ if __name__ == '__main__':
 #     print("List of Patients in alc_Patients table")
 #     for p in Patient.fetch_all_patients_from_db():
 #         print(p) 
+<<<<<<< HEAD
 #     print(Patient.fetch_patient_by_patient_id_from_db(2))
+=======
+#     print(Patient.fetch_patient_by_patient_id_from_db(2))
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
 #    insert_Report()
+<<<<<<< HEAD
+
+    app.run(port=7770)
+=======
     app.run(port=7770)
 
+>>>>>>> branch 'master' of https://github.com/MarshallGreaves61087/PythonProject.git
     pass
