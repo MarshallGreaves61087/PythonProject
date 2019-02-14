@@ -34,11 +34,7 @@ class Patient(db.Model):
     #one patient has many reports
     reports = db.relationship('Report',backref=db.backref('patient'),lazy=True)
     
-    #many patients for one lab manager
-    lab_manager_id = db.Column(db.Integer,
-                           db.ForeignKey('alc_Lab_Manager.lab_manager_id'),
-                           nullable=False)
-
+    
     def __init__(self,params):
         #self.patient_id = int(params["patient_id"])
         self.name=params["name"]
@@ -88,10 +84,6 @@ class Lab_Manager(db.Model):
 
     #one lab manager has many reports
     reports = db.relationship('Report',backref=db.backref('labManager'),lazy=True)
-    
-    #one lab manager has many patients
-    patients = db.relationship('Patient',
-                                         backref=db.backref('labManager'),lazy=True)
     
     def __init__(self,params):
         self.name=params["name"]
@@ -276,7 +268,7 @@ def fetch_Lab_Managers():
 
 if __name__ == '__main__':
 
-#    db.create_all()
+    db.create_all()
 #    example_Patient()
 #    example_Lab_Manager()
 #    example_Report()
