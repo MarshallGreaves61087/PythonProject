@@ -31,8 +31,7 @@ class Patient(db.Model):
     gender = db.Column('gender',db.String(10))
     
     #one patient has many reports
-    reports = db.relationship('Report',
-                                         backref=db.backref('patient'),lazy=True)
+    reports = db.relationship('Report',backref=db.backref('patient'),lazy=True)
     
     #many patients for one lab manager
     lab_manager_id = db.Column(db.Integer,
@@ -180,15 +179,19 @@ def register_patient_web():
 
 @app.route('/api/reports/register',methods=['POST'])
 def insert_Report():
-    r = db.session.add(Report({"title":request.form.get("title"),
+    r = Report({"title":request.form.get("title"),
                                "related_illness":request.form.get("related_illness"),
                                "date":request.form.get("date"),
                                "notes":request.form.get("notes"),
-                               "perscription":request.form.get("perscription"),
-                               "patient_id":request.form.get("patient_id")}))
+                               "perscription":request.form.get("perscription")})
+    db.session.add(r)
     
     p = Patient.query.filter_by(patient_id=request.form.get('patient_id')).first()
     p.reports.append(r)
+
+    print(p)
+    print(p.reports)
+    
     db.session.commit()
     reports = Report.query.all()
     for r in reports:
@@ -203,7 +206,8 @@ def register_report_web():
                                "related_illness":request.form.get("related_illness"),
                                "date":request.form.get("date"),
                                "notes":request.form.get("notes"),
-                               "perscription":request.form.get("perscription")}))
+                               "perscription":request.form.get("perscription"),
+                               "patient_id":request.form.get("patient_id")}))
     db.session.commit()
     return redirect("/web/patients")
 
@@ -235,10 +239,10 @@ def fetch_Lab_Managers():
 
 
 if __name__ == '__main__':
-    db.create_all()
+#    db.create_all()
 #    example_Patient()
 #    example_Lab_Manager()
-    example_Report()
+#    example_Report()
 #    example_Lab_Manager()
 #     print("List of Patients in alc_Patients table")
 #     for p in Patient.fetch_all_patients_from_db():
