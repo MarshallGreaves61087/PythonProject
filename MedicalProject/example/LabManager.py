@@ -9,25 +9,20 @@ import jsonpickle
 from flask.globals import request
 
 app= Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/graduate_training'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/medical_data'
 db = SQLAlchemy(app)
-
-class Lab_Manager_data(object):
-     
-    def __init__(self,params):
-        self.name=params["name"]
-        self.location=params["location"]
-        self.test=params["test"]
-        self.result=params["result"]
 
 class Lab_Manager(db.Model):
     
-    __tablename__="Lab_Manager_2"
+    __tablename__="alc_Lab_Manager"
     lab_manager_id = db.Column(db.Integer,primary_key=True)
     name = db.Column('lab_manager_name',db.String(50))
     location = db.Column('lab_manager_location',db.String(50))
     test = db.Column('lab_manager_test',db.String(50))
     result = db.Column('lab_manager_result',db.String(50))
+    
+    reports = db.relationship('Report',
+                                         backref=db.backref('lab_manager'),lazy=True)
     
     def __init__(self,params):
         self.name=params["name"]
