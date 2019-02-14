@@ -81,6 +81,7 @@ class Lab_Manager(db.Model):
     __tablename__="alc_Lab_Manager"
     lab_manager_id = db.Column(db.Integer,primary_key=True)
     name = db.Column('lab_manager_name',db.String(50))
+    location = db.Column('lab_manager_location',db.String(50))
     test = db.Column('lab_manager_test',db.String(50))
     result = db.Column('lab_manager_result',db.String(50))
 
@@ -224,6 +225,26 @@ def insert_Lab_Manager():
               lm.test,"Result: ",lm.result)
         
     return str(labManager)    
+
+@app.route('/api/labmanager/delete/<int:lab_manager_id>', methods = ['DELETE'])
+def delete_lab_manager(lab_manager_id):
+    labmanager = Lab_Manager.query.get(int(lab_manager_id))
+    db.session.delete(labmanager)
+    db.session.commit()
+    return jsonpickle.encode(labmanager)
+
+@app.route("/api/labmanager/update/<int:lab_manager_id>",methods=['POST'])
+def edit_lab_manager_reports(lab_manager_id):
+    request_data = request.get_json()
+    lbmg = Lab_Manager.query.get(int(lab_manager_id))
+    lbmg.name = request_data["name"]
+    lbmg.location = request_data["location"]
+    lbmg.test = request_data["test"]
+    lbmg.result = request_data["result"]
+    db.session.commit()
+    return_lab_manager = {"lab_manager_id":lbmg.lab_manager_id,"name":lbmg.name,
+                     "location":lbmg.location,"test":lbmg.test,"result":lbmg.result}
+    return jsonpickle.encode(return_lab_manager)
 
 @app.route('/api/reports/list')
 def fetch_reports():

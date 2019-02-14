@@ -68,6 +68,19 @@ def delete_lab_manager(lab_manager_id):
     db.session.commit()
     return jsonpickle.encode(labmanager)
 
+@app.route("/api/labmanager/update/<int:lab_manager_id>",methods=['POST'])
+def edit_lab_manager_reports(lab_manager_id):
+    request_data = request.get_json()
+    lbmg = Lab_Manager.query.get(int(lab_manager_id))
+    lbmg.name = request_data["name"]
+    lbmg.location = request_data["location"]
+    lbmg.test = request_data["test"]
+    lbmg.result = request_data["result"]
+    db.session.commit()
+    return_lab_manager = {"lab_manager_id":lbmg.lab_manager_id,"name":lbmg.name,
+                     "location":lbmg.location,"test":lbmg.test,"result":lbmg.resut}
+    return jsonpickle.encode(return_lab_manager)
+
 if __name__ == '__main__':
     #db.create_all()    #creates database
     #example_Lab_Manager()
