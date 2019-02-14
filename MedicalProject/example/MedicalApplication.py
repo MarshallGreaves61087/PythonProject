@@ -238,6 +238,7 @@ def fetch_Lab_Managers():
 
 
 if __name__ == '__main__':
+
 #    db.create_all()
 #    example_Patient()
 #    example_Lab_Manager()
