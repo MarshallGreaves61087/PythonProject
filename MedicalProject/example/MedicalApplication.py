@@ -64,9 +64,9 @@ class Report(db.Model):
                            nullable=False)
     
     #many reports for one lab manager
-    #lab_manager_id = db.Column(db.Integer,
-    #                       db.ForeignKey('alc_Lab_Manager.lab_manager_id'),
-    #                       nullable=False)
+    lab_manager_id = db.Column(db.Integer,
+                           db.ForeignKey('alc_Lab_Manager.lab_manager_id'),
+                           nullable=False)
     
     def __init__(self,params):
         self.title=params["title"]
@@ -86,6 +86,7 @@ class Lab_Manager(db.Model):
 
     #one lab manager has many reports
     reports = db.relationship('Report',backref=db.backref('labManager'),lazy=True)
+    
     #one lab manager has many patients
     patients = db.relationship('Patient',
                                          backref=db.backref('labManager'),lazy=True)
@@ -142,6 +143,9 @@ def example_Report():
 @app.route('/api/labmanager')
 def example_Lab_Manager():
     lm = Lab_Manager({"name":"Dr Farquad","test":"XRay","result":"Broken Forearm"})
+
+    
+    
     db.session.add(lm)
     db.session.commit()
     labManager = Lab_Manager.query.all()
@@ -154,16 +158,23 @@ def example_Lab_Manager():
 @app.route('/api/patients/register',methods=['POST'])
 def insert_Patient():
     #p=db.session.add(Patient({"name":"Example 4","age":48,"address":"New Address 4"}))
-    p = db.session.add(Patient({"name":request.form.get("name"),
+    p = Patient({"name":request.form.get("name"),
                                 "age":int(request.form.get("age")),
                                 "address":request.form.get("address"),
                                 "email":request.form.get("email"),
-                                "gender":request.form.get("gender")}))
+                                "gender":request.form.get("gender")})
+    
+    db.session.add(p)
+    
+    l = Lab_Manager.query.filter_by(lab_manager_id=request.form.get('lab_manager_id')).first()
+    l.patients.append(p)
+
+    
     db.session.commit()
     patients = Patient.query.all()
     for p in patients:
         print("Id: ",p.patient_id,"Name: ",p.name,"Age: ",p.age,"Address: ",p.address,
-              "Email: ",p.email,"Gender :",p.gender)
+              "Email: ",p.email,"Gender :",p.gender,"Lab Manager Id: ",p.lab_manager_id)
         
     return str(patients)
 
@@ -187,9 +198,13 @@ def insert_Report():
     
     p = Patient.query.filter_by(patient_id=request.form.get('patient_id')).first()
     p.reports.append(r)
+    l = Lab_Manager.query.filter_by(lab_manager_id=request.form.get('lab_manager_id')).first()
+    l.reports.append(r)
 
     print(p)
     print(p.reports)
+    print(l)
+    print(l.reports)
     
     db.session.commit()
     reports = Report.query.all()

@@ -8,6 +8,6 @@ Scenario: Get the Lab Manager from API
 	
 Scenario: Add Lab_Manager Details using API
 	Given a set lb for API
-	|lab_manager_id	|name	|location	|test		|result			|
-	|1				|Jimmy	|London		|Neck exam	|All clear		|
+	|lab_manager_id	|name	|test		|result			|
+	|6				|Jimmy	|Neck exam	|All clear		|
 	Then increase the Lab_Manager Count from API

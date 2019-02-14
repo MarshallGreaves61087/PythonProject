@@ -4,7 +4,7 @@ Created on 14 Feb 2019
 @author: Marshal61087
 '''
 import unittest
-from example.LabManager import Lab_Manager
+from example.MedicalApplication import Lab_Manager
 
 
 class Test(unittest.TestCase):
