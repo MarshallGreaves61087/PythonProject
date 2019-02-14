@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Medical Records</title>
+</head>
+<body>
+		<h1>Patient Information</h1>
+		{% if result %}
+		<table border="1">
+		<tr>
+			<th>Number</th>
+			<th>Name</th>
+			<th>Age</th>
+			<th>Address</th>
+		</tr>
+		{%for emp in result %}
+		<tr>
+			<td>{{emp.patno}}</td>
+			<td>{{emp.name}}</td>
+			<td>{{emp.age}}</td>
+			<td>{{emp.address}}</td>
+		</tr>
+		{%endfor%}
+		<tr>
+			<td id="count" colspan="3">{{result|count}} : Employees Fetched</td>
+		</tr>
+	</table>
+	<form id="emp-reg-form" method="POST" action="./employees/register">
+	<table>
+			<td><input name="empno" placeholder="Number" id="empno"></td>
+			
+	</table>
+	</form>
+	{%endif%}
+	
+			<h1>Employee Information</h1>
+			{% if result %}
+			<table border="1">
+			<tr>
+				<th>Number</th>
+				<th>Name</th>
+			</tr>
+			{%for emp in result %}
+			<tr>
+				<td>{{emp.labno}}</td>
+				<td>{{emp.cname}}</td>
+			</tr>
+			{%endfor%}
+</body>
+</html>
