@@ -9,6 +9,7 @@ import jsonpickle
 from flask.globals import request
 from sqlalchemy.orm import backref
 from werkzeug.utils import redirect
+from flask.templating import render_template
 
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/medical_data'
@@ -117,11 +118,7 @@ def insert_Patient():
 
 @app.route('/web/patients/register',methods=['POST'])
 def register_patient_web():
-    insert_Patient(Patient({"name":request.form.get("name"),
-                                "age":int(request.form.get("age")),
-                                "address":request.form.get("address"),
-                                "email":request.form.get("email"),
-                                "gender":request.form.get("gender")}))
+    insert_Patient();
     return redirect("/web/patients")
 
 @app.route('/api/reports/register',methods=['POST'])
@@ -140,22 +137,28 @@ def insert_Report():
 
 @app.route('/web/reports/register',methods=['POST'])
 def register_report_web():
-    insert_Report(
-        Report({"title":request.form.get("title"),
-                               "related_illness":request.form.get("related_illness"),
-                               "date":request.form.get("date"),
-                               "notes":request.form.get("notes"),
-                               "perscription":request.form.get("perscription")}))
-    db.session.commit()
-    return redirect("/web/patients")
+    insert_Report();
+    return redirect("/web/reports")
 
 @app.route('/api/reports/list')
 def fetch_reports():
     return jsonpickle.encode(Report.query.all())
-    
+
+@app.route("/web/reports")
+def display_reports_page():
+    return render_template('/reports.html',result=jsonpickle.decode(fetch_reports()),content_type="application/json")
+
 @app.route('/api/patients/list')
 def fetch_patients():
     return jsonpickle.encode(Patient.query.all())
+
+@app.route("/web/patients")
+def display_patients_page():
+    return render_template('/patients.html',result=jsonpickle.decode(fetch_patients()),content_type="application/json")
+
+@app.route("/web/home")
+def display_home_page():
+    return render_template('/home.html',result=jsonpickle.decode(fetch_reports()),content_type="application/json")
 
 
 if __name__ == '__main__':
@@ -167,5 +170,5 @@ if __name__ == '__main__':
 #         print(p) 
 #     print(Patient.fetch_patient_by_patient_id_from_db(2))
 #    insert_Report()
-    app.run(port=7700)
+    app.run(port=7770)
     pass
